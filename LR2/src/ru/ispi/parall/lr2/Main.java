@@ -18,13 +18,13 @@ import javax.imageio.ImageIO;
  */
 public class Main {
 
-    private static int MONO_THRESHOLD = 368;
+    private static int MONO_THRESHOLD = 268;
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        makeMonoImage("c:/temp/3.png");
     }
     
     public static void makeMonoImage(String imageName) {
@@ -39,15 +39,16 @@ public class Main {
             for (int y = 0; y < inputFile.getHeight(); y++) {
                 int rgba = inputFile.getRGB(x, y);
                 Color col = new Color(rgba, true);
-                col = new Color(255 - col.getRed(),
-                                255 - col.getGreen(),
-                                255 - col.getBlue());
+                if (col.getRed() + col.getGreen() + col.getBlue() > MONO_THRESHOLD)
+                    col = new Color(255, 255, 255);
+                else
+                    col = new Color(0, 0, 0);
                 inputFile.setRGB(x, y, col.getRGB());
             }
         }
 
         try {
-            File outputFile = new File("invert-"+imageName);
+            File outputFile = new File("c:/temp/3-inverted.png");
             ImageIO.write(inputFile, "png", outputFile);
         } catch (IOException e) {
             e.printStackTrace();
