@@ -19,13 +19,18 @@ import javax.imageio.ImageIO;
  */
 public class Main {
 
-    private static int MONO_THRESHOLD = 268;
+    private static int threshold;
+    private static String path;
+    private static String name;
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        makeMonoImage("c:/temp/4.png");
+        path = args.length>0 && args[0]==null ? args[0] : "C:/temp/";
+        name = args.length>0 && args[1]==null ? args[1] : "4.png";
+        threshold = args.length>0 && args[2]==null ? Integer.parseInt(args[2]) : 286;
+        makeMonoImage(path + name);
     }
     
     public static void makeMonoImage(String imageName) {
@@ -36,12 +41,12 @@ public class Main {
             e.printStackTrace();
         }
 
-        MonochromeTask mt = new MonochromeTask(inputFile, 0, 0, inputFile.getWidth(), inputFile.getHeight(), MONO_THRESHOLD);
+        MonochromeTask mt = new MonochromeTask(inputFile, 0, 0, inputFile.getWidth(), inputFile.getHeight(), threshold);
         ForkJoinPool pool = new ForkJoinPool();
         pool.invoke(mt);
 
         try {
-            File outputFile = new File("c:/temp/4-inverted.png");
+            File outputFile = new File(path + "mono-"+name);
             ImageIO.write(inputFile, "png", outputFile);
         } catch (IOException e) {
             e.printStackTrace();

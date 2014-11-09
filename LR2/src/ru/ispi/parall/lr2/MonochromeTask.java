@@ -47,7 +47,7 @@ public class MonochromeTask extends RecursiveAction{
     
     @Override
     protected void compute() {
-        if ((endX - startX < 50) || (endY - startY < 50)) {
+        if ((endX - startX < 200) || (endY - startY < 200)) {
             computeDirectly();
             return;
         }
