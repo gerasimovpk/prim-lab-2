@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ForkJoinPool;
 import javax.imageio.ImageIO;
 
 /**
@@ -24,7 +25,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        makeMonoImage("c:/temp/3.png");
+        makeMonoImage("c:/temp/4.png");
     }
     
     public static void makeMonoImage(String imageName) {
@@ -35,20 +36,12 @@ public class Main {
             e.printStackTrace();
         }
 
-        for (int x = 0; x < inputFile.getWidth(); x++) {
-            for (int y = 0; y < inputFile.getHeight(); y++) {
-                int rgba = inputFile.getRGB(x, y);
-                Color col = new Color(rgba, true);
-                if (col.getRed() + col.getGreen() + col.getBlue() > MONO_THRESHOLD)
-                    col = new Color(255, 255, 255);
-                else
-                    col = new Color(0, 0, 0);
-                inputFile.setRGB(x, y, col.getRGB());
-            }
-        }
+        MonochromeTask mt = new MonochromeTask(inputFile, 0, 0, inputFile.getWidth(), inputFile.getHeight(), MONO_THRESHOLD);
+        ForkJoinPool pool = new ForkJoinPool();
+        pool.invoke(mt);
 
         try {
-            File outputFile = new File("c:/temp/3-inverted.png");
+            File outputFile = new File("c:/temp/4-inverted.png");
             ImageIO.write(inputFile, "png", outputFile);
         } catch (IOException e) {
             e.printStackTrace();

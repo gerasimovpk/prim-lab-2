@@ -48,8 +48,19 @@ public class MonochromeTask extends RecursiveAction{
     @Override
     protected void compute() {
         if ((endX - startX < 50) || (endY - startY < 50)) {
-            computeDirectl();
+            computeDirectly();
             return;
         }
+        
+        int middleX = startX + (endX-startX)/2;
+        int middleY = startY + (endY-startY)/2;
+        
+        invokeAll(
+                new MonochromeTask(image, startX, startY, middleX, middleY, threshold),
+                new MonochromeTask(image, middleX, startY, endX, middleY, threshold),
+                new MonochromeTask(image, startX, middleY, middleX, endY, threshold),
+                new MonochromeTask(image, middleX, middleY, endX, endY, threshold)
+                );
+        
     }
 }
